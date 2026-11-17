@@ -16,6 +16,25 @@ public class Ventana {
     private JButton REGISTRARButton;
     private JButton TOTALPELICULASButton;
 
+    // Un solo catálogo compartido por todas las pestañas (se carga una vez)
+    private final CatalogoPeliculas catalogo = new CatalogoPeliculas();
+    private PanelBusqueda panelBusqueda;
+    private PanelRanking panelRanking;
+
+    public Ventana() {
+        panelBusqueda = new PanelBusqueda(catalogo);
+        panelRanking = new PanelRanking(catalogo);
+        tabbedPane1.setComponentAt(1, panelBusqueda);
+        tabbedPane1.setComponentAt(2, panelRanking);
+
+        // Al entrar en la pestaña Ranking se recalcula con los contadores actuales
+        tabbedPane1.addChangeListener(e -> {
+            if (tabbedPane1.getSelectedComponent() == panelRanking) {
+                panelRanking.actualizar();
+            }
+        });
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Ventana");
         frame.setContentPane(new Ventana().Principal);
