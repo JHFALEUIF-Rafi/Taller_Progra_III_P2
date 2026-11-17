@@ -28,10 +28,20 @@ public class CatalogoPeliculas {
 
     public CatalogoPeliculas() {
         precargar();
+        ordenar();
     }
 
     public void ordenar(){
-
+    Pelicula aux;
+    for(int i=0;i<peliculas.size()-1;i++){
+        for(int j=i+1;j<peliculas.size();j++){
+            if(peliculas.get(i).getCodigo()>peliculas.get(j).getCodigo()){
+                aux=peliculas.get(i);
+                peliculas.set(i,peliculas.get(j));
+                peliculas.set(j,aux);
+            }
+        }
+    }
 
 
     }
