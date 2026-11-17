@@ -203,11 +203,11 @@ Realizar los casos que mencionan los datos iniciales antes de modificar ese conj
 
 | Integrante | Usuario GitHub | Funcionalidad desarrollada | Enlace al commit |
 |---|---|---|---|
-| Ariel Arauz | Por completar | Por completar | Por completar |
-| Dereck Yamberla | Por completar | Por completar | Por completar |
-| Anthony Iza | Por completar | Por completar | Por completar |
-| Michael Murrillo | Por completar | Por completar | Por completar |
-| Rafael Yepez | Por completar | Por completar | Por completar |
+| Ariel Arauz | ArielGit2007 | Por completar | Por completar |
+| Dereck Yamberla | Dereck1044 | Por completar | Por completar |
+| Anthony Iza | Anthony226-hub | Por completar | Por completar |
+| Michael Murrillo | maicolmlr | Por completar | Por completar |
+| Rafael Yepez | JHFALEUIF-Rafi | Por completar | Por completar |
 
 Verificar que GitHub muestre correctamente la autoría. Si utilizan Git local, configurar un correo asociado a la cuenta correspondiente. No compartir cuentas.
 
