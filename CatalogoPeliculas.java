@@ -1,29 +1,12 @@
+import java.time.Year;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CatalogoPeliculas {
     public ArrayList<Pelicula>  peliculas = new ArrayList<>();
+
+    // R1: las veinte películas vienen desordenadas desde DatosIniciales
     public void precargar(){
-        peliculas.add(new Pelicula(2016, "Cartas de invierno", "Nicolás López", "Drama", 2025, 1));
-        peliculas.add(new Pelicula(2003, "El último mapa", "Carla Ríos", "Aventura", 2022, 6));
-        peliculas.add(new Pelicula(2010, "La isla del viento", "Marco Vera", "Aventura", 2020, 2));
-        peliculas.add(new Pelicula(2001, "La ciudad de los faros", "Ana Torres", "Drama", 2021, 4));
-        peliculas.add(new Pelicula(2018, "Vecinos por un día", "Camila Vega", "Comedia", 2023, 0));
-        peliculas.add(new Pelicula(2008, "Caminos de la montaña", "Pablo Soto", "Documental", 2024, 1));
-        peliculas.add(new Pelicula(2005, "Guardianes del bosque", "Sofía Paz", "Animación", 2023, 0));
-        peliculas.add(new Pelicula(2013, "Señales desde el espacio", "Gabriela Ríos", "Ciencia ficción", 2023, 4));
-        peliculas.add(new Pelicula(2002, "Viaje al espacio", "Luis Mora", "Ciencia ficción", 2020, 1));
-        peliculas.add(new Pelicula(2019, "Amigos del espacio", "Tomás León", "Animación", 2024, 4));
-        peliculas.add(new Pelicula(2006, "Sombras del puerto", "Diego Ruiz", "Suspenso", 2021, 6));
-        peliculas.add(new Pelicula(2015, "Memorias del río", "Valeria Sol", "Documental", 2024, 5));
-        peliculas.add(new Pelicula(2004, "Una tarde inesperada", "Pedro Vega", "Comedia", 2019, 2));
-        peliculas.add(new Pelicula(2020, "El puente de cristal", "Isabel Rojas", "Suspenso", 2025, 3));
-        peliculas.add(new Pelicula(2011, "Un plan diferente", "Daniela Vega", "Comedia", 2025, 6));
-        peliculas.add(new Pelicula(2007, "Ecos del espacio", "Elena Ramos", "Ciencia ficción", 2020, 3));
-        peliculas.add(new Pelicula(2017, "La ruta del tesoro", "Paula Reyes", "Aventura", 2021, 2));
-        peliculas.add(new Pelicula(2009, "El café de la esquina", "Laura Díaz", "Drama", 2022, 5));
-        peliculas.add(new Pelicula(2014, "La puerta cerrada", "Mateo Peña", "Suspenso", 2022, 3));
-        peliculas.add(new Pelicula(2012, "El reloj de papel", "Andrés Luna", "Animación", 2021, 0));
+        peliculas = DatosIniciales.cargar();
     }
 
     public CatalogoPeliculas() {
@@ -31,14 +14,15 @@ public class CatalogoPeliculas {
         ordenar();
     }
 
+    // Burbuja por código ascendente: compara vecinos j y j+1
     public void ordenar(){
         Pelicula aux;
         for(int i=0;i<peliculas.size()-1;i++){
-            for(int j=i+1;j<peliculas.size();j++){
-                if(peliculas.get(i).getCodigo()>peliculas.get(j).getCodigo()){
-                    aux=peliculas.get(i);
-                    peliculas.set(i,peliculas.get(j));
-                    peliculas.set(j,aux);
+            for(int j=0;j<peliculas.size()-1-i;j++){
+                if(peliculas.get(j).getCodigo()>peliculas.get(j+1).getCodigo()){
+                    aux=peliculas.get(j);
+                    peliculas.set(j,peliculas.get(j+1));
+                    peliculas.set(j+1,aux);
                 }
             }
         }
@@ -69,13 +53,11 @@ public class CatalogoPeliculas {
         if (codigo <= 0)
             throw new Exception("Seleccione una película válida");
 
-        for (Pelicula p : peliculas) {
-            if (p.getCodigo() == codigo) {
-                p.incrementarMeGusta();
-                return;
-            }
-        }
-        throw new Exception("No existe una película con el código " + codigo);
+        int indice = buscarIndicePorCodigo(codigo);
+        if (indice == -1)
+            throw new Exception("No existe una película con el código " + codigo);
+
+        peliculas.get(indice).incrementarMeGusta();
     }
 
     // R6: copia de la lista principal ordenada por me gusta descendente con burbuja.
@@ -95,9 +77,10 @@ public class CatalogoPeliculas {
         }
         return ranking;
     }
-    public static final int ANIO_MIN = 1900;
+    // El año va desde 1 hasta el año actual
+    public static final int ANIO_MIN = 1;
 
-    public static final int ANIO_MAX = 2026;
+    public static final int ANIO_MAX = Year.now().getValue();
 
     public static final String[] GENEROS = {"Ciencia ficción", "Drama", "Aventura",
 
@@ -123,11 +106,8 @@ public class CatalogoPeliculas {
         if (dato.getAnio() < ANIO_MIN || dato.getAnio() > ANIO_MAX)
             throw new Exception("El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX);
 
-        for (Pelicula aux : peliculas) {
-            if (aux.getCodigo() == dato.getCodigo())
-                throw new Exception("Ya existe una película con el código " + dato.getCodigo());
-
-        }
+        if (buscarIndicePorCodigo(dato.getCodigo()) != -1)
+            throw new Exception("Ya existe una película con el código " + dato.getCodigo());
 
         peliculas.add(dato);
         ordenar();
@@ -147,8 +127,11 @@ public class CatalogoPeliculas {
         return peliculas.size();
 
     }
-    public int buscarIndicePorCodigo(int codigo) {
-        ordenar();
+    // R4: búsqueda binaria; la lista principal siempre está ordenada por código
+    public int buscarIndicePorCodigo(int codigo) throws Exception {
+        if (codigo <= 0)
+            throw new Exception("El código debe ser positivo");
+
         int inicio = 0;
         int fin = peliculas.size() - 1;
 
@@ -190,4 +173,5 @@ public class CatalogoPeliculas {
         p.setDirector(director.trim());
         p.setGenero(genero.trim());
         p.setAnio(anio);
-    }}
+    }
+}
