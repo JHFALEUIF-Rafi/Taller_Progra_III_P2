@@ -107,5 +107,47 @@ public class CatalogoPeliculas {
         return peliculas.size();
 
     }
+    public int buscarIndicePorCodigo(int codigo) {
+        ordenar();
+        int inicio = 0;
+        int fin = peliculas.size() - 1;
 
-}
+        while (inicio <= fin) {
+            int medio = inicio + (fin - inicio) / 2;
+            int codigoActual = peliculas.get(medio).getCodigo();
+
+            if (codigoActual == codigo) {
+                return medio;
+            } else if (codigoActual < codigo) {
+                inicio = medio + 1;
+            } else {
+                fin = medio - 1;
+            }
+        }
+        return -1;
+    }
+
+    public void editarPelicula(int codigo, String titulo, String director, String genero, int anio) throws Exception {
+        int indice = buscarIndicePorCodigo(codigo);
+        if (indice == -1) {
+            throw new Exception("No existe una película con el código " + codigo);
+        }
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new Exception("El título es obligatorio");
+        }
+        if (director == null || director.trim().isEmpty()) {
+            throw new Exception("El director es obligatorio");
+        }
+        if (!generoValido(genero)) {
+            throw new Exception("Seleccione un género válido");
+        }
+        if (anio < ANIO_MIN || anio > ANIO_MAX) {
+            throw new Exception("El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX);
+        }
+
+        Pelicula p = peliculas.get(indice);
+        p.setTitulo(titulo.trim());
+        p.setDirector(director.trim());
+        p.setGenero(genero.trim());
+        p.setAnio(anio);
+    }}
