@@ -43,6 +43,17 @@ public class CatalogoPeliculas {
         }
     }
 
+    }
 
+    public List<Pelicula> buscarCoincidencias(String texto) {
+        List<Pelicula> resultados = new ArrayList<>();
+        String criterio = (texto == null) ? "" : texto.trim().toLowerCase();
+
+        for (Pelicula p : peliculas) {
+            if (p.getTitulo().toLowerCase().contains(criterio)) {
+                resultados.add(p);
+            }
+        }
+        return resultados;
     }
 }
