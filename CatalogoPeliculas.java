@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class CatalogoPeliculas {
     public ArrayList<Pelicula>  peliculas = new ArrayList<>();
 
-    // R1: las veinte películas vienen desordenadas desde DatosIniciales
     public void precargar(){
         peliculas = DatosIniciales.cargar();
     }
@@ -14,7 +13,6 @@ public class CatalogoPeliculas {
         ordenar();
     }
 
-    // Burbuja por código ascendente: compara vecinos j y j+1
     public void ordenar(){
         Pelicula aux;
         for(int i=0;i<peliculas.size()-1;i++){
@@ -29,8 +27,6 @@ public class CatalogoPeliculas {
 
     }
 
-    // R3: búsqueda lineal por título o director. Devuelve un ArrayList nuevo
-    // (vacío si no hay coincidencias) en orden por código.
     public ArrayList<Pelicula> buscarCoincidencias(String texto) throws Exception {
         if (texto == null || texto.trim().isEmpty())
             throw new Exception("Ingrese un texto para buscar");
@@ -39,7 +35,6 @@ public class CatalogoPeliculas {
         ArrayList<Pelicula> resultados = new ArrayList<>();
 
         for (Pelicula p : peliculas) {
-            // Con || la película se agrega una sola vez aunque coincida en ambos campos
             if (p.getTitulo().toLowerCase().contains(criterio)
                     || p.getDirector().toLowerCase().contains(criterio)) {
                 resultados.add(p);
@@ -48,7 +43,6 @@ public class CatalogoPeliculas {
         return resultados;
     }
 
-    // R5: incrementa en uno el contador de la película con ese código.
     public void darMeGusta(int codigo) throws Exception {
         if (codigo <= 0)
             throw new Exception("Seleccione una película válida");
@@ -60,9 +54,6 @@ public class CatalogoPeliculas {
         peliculas.get(indice).incrementarMeGusta();
     }
 
-    // R6: copia de la lista principal ordenada por me gusta descendente con burbuja.
-    // Solo se intercambia cuando el de la izquierda es MENOR, así los empates
-    // conservan el orden por código (burbuja estable). La lista principal no cambia.
     public ArrayList<Pelicula> obtenerRanking() {
         ArrayList<Pelicula> ranking = new ArrayList<>(peliculas);
         Pelicula aux;
@@ -77,7 +68,6 @@ public class CatalogoPeliculas {
         }
         return ranking;
     }
-    // El año va desde 1 hasta el año actual
     public static final int ANIO_MIN = 1;
 
     public static final int ANIO_MAX = Year.now().getValue();
@@ -127,7 +117,6 @@ public class CatalogoPeliculas {
         return peliculas.size();
 
     }
-    // R4: búsqueda binaria; la lista principal siempre está ordenada por código
     public int buscarIndicePorCodigo(int codigo) throws Exception {
         if (codigo <= 0)
             throw new Exception("El código debe ser positivo");

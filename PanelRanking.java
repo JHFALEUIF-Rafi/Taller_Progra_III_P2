@@ -25,7 +25,6 @@ public class PanelRanking extends JPanel {
 
         modeloRanking = new DefaultListModel<>();
         listaRanking = new JList<>(modeloRanking);
-        // Muestra posición, código, título y contador de cada película
         listaRanking.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -48,7 +47,6 @@ public class PanelRanking extends JPanel {
         btnActualizar.addActionListener(e -> actualizar());
     }
 
-    // Se llama al pulsar Actualizar y al entrar en la pestaña
     public void actualizar() {
         ArrayList<Pelicula> ranking = catalogo.obtenerRanking();
         modeloRanking.clear();

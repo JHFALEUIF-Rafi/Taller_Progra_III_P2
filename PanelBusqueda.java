@@ -23,7 +23,6 @@ public class PanelBusqueda extends JPanel {
     private JButton btnGuardarCambios;
     private JButton btnMeGusta;
 
-    // Último texto buscado; null si la lista muestra un resultado por código
     private String ultimaBusqueda = null;
 
     public PanelBusqueda(CatalogoPeliculas catalogo) {
@@ -98,7 +97,6 @@ public class PanelBusqueda extends JPanel {
         spnEditAnio.setEditor(new JSpinner.NumberEditor(spnEditAnio, "#"));
         panelCampos.add(spnEditAnio);
 
-        // El contador solo se muestra; no se escribe a mano
         panelCampos.add(new JLabel("Me gusta:"));
         lblEditMeGusta = new JLabel("-");
         panelCampos.add(lblEditMeGusta);
@@ -124,7 +122,6 @@ public class PanelBusqueda extends JPanel {
         btnGuardarCambios.addActionListener(e -> guardarCambios());
         btnMeGusta.addActionListener(e -> darMeGusta());
 
-        // Seleccionar solo carga los datos; no incrementa el contador
         listaResultados.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 Pelicula seleccionada = listaResultados.getSelectedValue();
@@ -137,7 +134,6 @@ public class PanelBusqueda extends JPanel {
         });
     }
 
-    // R3: búsqueda lineal por texto
     public void ejecutarBusqueda() {
         try {
             ArrayList<Pelicula> coincidencias = catalogo.buscarCoincidencias(txtBuscar.getText());
@@ -154,13 +150,11 @@ public class PanelBusqueda extends JPanel {
         }
     }
 
-    // R4: búsqueda binaria por código
     private void buscarPorCodigo() {
         try {
             int codigo = Integer.parseInt(txtBuscarCodigo.getText().trim());
             int indice = catalogo.buscarIndicePorCodigo(codigo);
             if (indice == -1) {
-                // Se limpia la selección para no editar ni dar me gusta a otra película
                 listaResultados.clearSelection();
                 limpiarFormularioEdicion();
                 JOptionPane.showMessageDialog(this, "No se encontró ninguna película con el código " + codigo,
@@ -169,7 +163,6 @@ public class PanelBusqueda extends JPanel {
             }
 
             Pelicula p = catalogo.peliculas.get(indice);
-            // Si no está entre los resultados actuales, se muestra sola en la lista
             if (!modeloLista.contains(p)) {
                 ultimaBusqueda = null;
                 ArrayList<Pelicula> unica = new ArrayList<>();
@@ -207,7 +200,6 @@ public class PanelBusqueda extends JPanel {
         }
     }
 
-    // R5: suma un me gusta a la película seleccionada
     private void darMeGusta() {
         int codigo = codigoSeleccionado();
         if (codigo == -1) {
@@ -217,7 +209,6 @@ public class PanelBusqueda extends JPanel {
         }
         try {
             catalogo.darMeGusta(codigo);
-            // La JList contiene los mismos objetos del catálogo: basta con repintar
             listaResultados.repaint();
             Pelicula seleccionada = listaResultados.getSelectedValue();
             lblEditMeGusta.setText(String.valueOf(seleccionada.getMeGusta()));
@@ -228,8 +219,6 @@ public class PanelBusqueda extends JPanel {
         }
     }
 
-    // Recalcula la búsqueda después de registrar o editar.
-    // Si la película seleccionada ya no coincide, se limpia la selección.
     public void refrescarResultados() {
         if (ultimaBusqueda == null) {
             listaResultados.repaint();
@@ -255,7 +244,6 @@ public class PanelBusqueda extends JPanel {
     }
 
     private void mostrarResultados(ArrayList<Pelicula> peliculas) {
-        // clear() también limpia la selección anterior
         modeloLista.clear();
         for (Pelicula p : peliculas) {
             modeloLista.addElement(p);
@@ -265,7 +253,6 @@ public class PanelBusqueda extends JPanel {
         limpiarFormularioEdicion();
     }
 
-    // Identifica la película por su código, no por el índice de la JList
     private int codigoSeleccionado() {
         if (txtEditCodigo.getText().isEmpty()) {
             return -1;

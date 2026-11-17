@@ -16,7 +16,6 @@ public class Ventana {
     private JButton REGISTRARButton;
     private JButton TOTALPELICULASButton;
 
-    // Un solo catálogo compartido por todas las pestañas (se carga una vez)
     private final CatalogoPeliculas catalogo = new CatalogoPeliculas();
     private PanelBusqueda panelBusqueda;
     private PanelRanking panelRanking;
@@ -27,7 +26,6 @@ public class Ventana {
         tabbedPane1.setComponentAt(1, panelBusqueda);
         tabbedPane1.setComponentAt(2, panelRanking);
 
-        // Año entre 1 y el año actual, sin separador de miles
         spinAnio.setModel(new SpinnerNumberModel(CatalogoPeliculas.ANIO_MAX,
                 CatalogoPeliculas.ANIO_MIN, CatalogoPeliculas.ANIO_MAX, 1));
         spinAnio.setEditor(new JSpinner.NumberEditor(spinAnio, "#"));
@@ -37,7 +35,6 @@ public class Ventana {
         TOTALPELICULASButton.addActionListener(e ->
                 JOptionPane.showMessageDialog(Principal, "Total de películas: " + catalogo.getTotal()));
 
-        // Al entrar en la pestaña Ranking se recalcula con los contadores actuales
         tabbedPane1.addChangeListener(e -> {
             if (tabbedPane1.getSelectedComponent() == panelRanking) {
                 panelRanking.actualizar();
@@ -45,7 +42,6 @@ public class Ventana {
         });
     }
 
-    // R2: registra una película nueva con cero me gusta
     private void registrarPelicula() {
         try {
             String textoCodigo = txtCodigo.getText().trim();
