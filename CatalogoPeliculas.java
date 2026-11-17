@@ -28,20 +28,19 @@ public class CatalogoPeliculas {
 
     public CatalogoPeliculas() {
         precargar();
-        ordenar();
     }
 
     public void ordenar(){
-    Pelicula aux;
-    for(int i=0;i<peliculas.size()-1;i++){
-        for(int j=i+1;j<peliculas.size();j++){
-            if(peliculas.get(i).getCodigo()>peliculas.get(j).getCodigo()){
-                aux=peliculas.get(i);
-                peliculas.set(i,peliculas.get(j));
-                peliculas.set(j,aux);
+        Pelicula aux;
+        for(int i=0;i<peliculas.size()-1;i++){
+            for(int j=i+1;j<peliculas.size();j++){
+                if(peliculas.get(i).getCodigo()>peliculas.get(j).getCodigo()){
+                    aux=peliculas.get(i);
+                    peliculas.set(i,peliculas.get(j));
+                    peliculas.set(j,aux);
+                }
             }
         }
-    }
 
     }
 
@@ -56,4 +55,57 @@ public class CatalogoPeliculas {
         }
         return resultados;
     }
+    public static final int ANIO_MIN = 1900;
+
+    public static final int ANIO_MAX = 2026;
+
+    public static final String[] GENEROS = {"Ciencia ficción", "Drama", "Aventura",
+
+            "Comedia", "Animación", "Suspenso", "Documental"};
+
+    public void registrar(Pelicula dato) throws Exception {
+
+        if (dato == null)
+            throw new Exception("La película no puede ser nula");
+
+        if (dato.getCodigo() <= 0)
+            throw new Exception("El código debe ser positivo");
+
+        if (dato.getTitulo() == null || dato.getTitulo().trim().isEmpty())
+            throw new Exception("El título es obligatorio");
+
+        if (dato.getDirector() == null || dato.getDirector().trim().isEmpty())
+            throw new Exception("El director es obligatorio");
+
+        if (!generoValido(dato.getGenero()))
+            throw new Exception("Seleccione un género válido");
+
+        if (dato.getAnio() < ANIO_MIN || dato.getAnio() > ANIO_MAX)
+            throw new Exception("El año debe estar entre " + ANIO_MIN + " y " + ANIO_MAX);
+
+        for (Pelicula aux : peliculas) {
+            if (aux.getCodigo() == dato.getCodigo())
+                throw new Exception("Ya existe una película con el código " + dato.getCodigo());
+
+        }
+
+        peliculas.add(dato);
+        ordenar();
+    }
+
+    private boolean generoValido(String genero) {
+        if (genero == null) return false;
+        for (String g : GENEROS) {
+            if (g.equals(genero)) return true;
+        }
+
+        return false;
+
+    }
+
+    public int getTotal() {
+        return peliculas.size();
+
+    }
+
 }
