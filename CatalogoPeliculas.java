@@ -28,6 +28,7 @@ public class CatalogoPeliculas {
 
     public CatalogoPeliculas() {
         precargar();
+        ordenar();
     }
 
     public void ordenar(){
@@ -44,16 +45,55 @@ public class CatalogoPeliculas {
 
     }
 
-    public List<Pelicula> buscarCoincidencias(String texto) {
-        List<Pelicula> resultados = new ArrayList<>();
-        String criterio = (texto == null) ? "" : texto.trim().toLowerCase();
+    // R3: búsqueda lineal por título o director. Devuelve un ArrayList nuevo
+    // (vacío si no hay coincidencias) en orden por código.
+    public ArrayList<Pelicula> buscarCoincidencias(String texto) throws Exception {
+        if (texto == null || texto.trim().isEmpty())
+            throw new Exception("Ingrese un texto para buscar");
+
+        String criterio = texto.trim().toLowerCase();
+        ArrayList<Pelicula> resultados = new ArrayList<>();
 
         for (Pelicula p : peliculas) {
-            if (p.getTitulo().toLowerCase().contains(criterio)) {
+            // Con || la película se agrega una sola vez aunque coincida en ambos campos
+            if (p.getTitulo().toLowerCase().contains(criterio)
+                    || p.getDirector().toLowerCase().contains(criterio)) {
                 resultados.add(p);
             }
         }
         return resultados;
+    }
+
+    // R5: incrementa en uno el contador de la película con ese código.
+    public void darMeGusta(int codigo) throws Exception {
+        if (codigo <= 0)
+            throw new Exception("Seleccione una película válida");
+
+        for (Pelicula p : peliculas) {
+            if (p.getCodigo() == codigo) {
+                p.incrementarMeGusta();
+                return;
+            }
+        }
+        throw new Exception("No existe una película con el código " + codigo);
+    }
+
+    // R6: copia de la lista principal ordenada por me gusta descendente con burbuja.
+    // Solo se intercambia cuando el de la izquierda es MENOR, así los empates
+    // conservan el orden por código (burbuja estable). La lista principal no cambia.
+    public ArrayList<Pelicula> obtenerRanking() {
+        ArrayList<Pelicula> ranking = new ArrayList<>(peliculas);
+        Pelicula aux;
+        for (int i = 0; i < ranking.size() - 1; i++) {
+            for (int j = 0; j < ranking.size() - 1 - i; j++) {
+                if (ranking.get(j).getMeGusta() < ranking.get(j + 1).getMeGusta()) {
+                    aux = ranking.get(j);
+                    ranking.set(j, ranking.get(j + 1));
+                    ranking.set(j + 1, aux);
+                }
+            }
+        }
+        return ranking;
     }
     public static final int ANIO_MIN = 1900;
 
